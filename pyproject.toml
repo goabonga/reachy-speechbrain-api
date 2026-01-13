@@ -1,0 +1,67 @@
+[project]
+name = "reachy-speechbrain-api"
+version = "0.0.0"
+description = "Lightweight SpeechBrain API for speech recognition and voice understanding on Reachy robots."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+  "fastapi",
+  "uvicorn",
+  "speechbrain @ git+https://github.com/speechbrain/speechbrain.git@develop",
+  "torchaudio",
+  "python-multipart",
+  "requests",
+  "huggingface-hub",
+]
+
+[project.optional-dependencies]
+dev = [
+  "ruff",
+  "mypy",
+  "pytest",
+  "pytest-cov",
+  "httpx",
+]
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.mypy]
+python_version = "3.12"
+warn_return_any = true
+warn_unused_configs = true
+
+[[tool.mypy.overrides]]
+module = ["torchaudio", "torchaudio.*", "speechbrain.*"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "--cov=app --cov=storage --cov-report=term-missing --cov-report=html"
+filterwarnings = [
+  "ignore::DeprecationWarning:importlib._bootstrap",
+  "ignore:builtin type swigvarlink:DeprecationWarning",
+]
+
+[tool.coverage.run]
+source = ["app", "storage"]
+omit = ["tests/*"]
+
+[tool.coverage.report]
+exclude_lines = [
+  "pragma: no cover",
+  "if __name__ == .__main__.:",
+  "@abstractmethod",
+  "pass",
+]
+
+[tool.commitizen]
+name = "cz_conventional_commits"
+version = "0.0.0"
+version_files = ["pyproject.toml:^version"]
+tag_format = "v$version"
+update_changelog_on_bump = true
